@@ -7,6 +7,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Faker\Generator;
 use Faker\Factory;
 use Doctrine\Persistence\ObjectManager;
+use App\Entity\User;
 
 class AppFixtures extends Fixture
 {
@@ -25,6 +26,18 @@ class AppFixtures extends Fixture
             $article = new Article();
             $article->setName($this->faker->word())->setPrice(mt_rand(0, 100));
             $manager->persist($article);
+        }
+        $manager->flush();
+
+        // User
+        for($i=1; $i <= 10; $i++) {
+            $user = new User();
+            $user->setFullName($this->faker->name());
+            $user->setPseudo(mt_rand(0,1) === 1 ? $this->faker->firstName() : null);
+            $user->setEmail($this->faker->safeEmail());
+            $user->setRoles(['ROLE_USER']);
+            $user->setPlainPassword('password');
+            $manager->persist($user);
         }
         $manager->flush();
     }
