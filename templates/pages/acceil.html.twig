@@ -6,6 +6,11 @@
 
 {% block body %}
 <div class="container mt-4">
+    {% for message in app.flashes('success') %}
+      <div class="alert alert-dismissible alert-success">
+            {{ message }}
+      </div>
+    {% endfor %}
     <div class="jumbotron">
         <h1 class="display-4">Bienvenue a MarketPlace</h1>
         <p class="lead">MarketPlace est un sit de vente en ligne pour acheter des cartes TCG</p>
