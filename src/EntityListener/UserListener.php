@@ -16,11 +16,10 @@ class UserListener {
         $this->encodePassword($user);
     }
 
-    /*public function preUpdate(User $user) {
+    public function preUpdate(User $user) {
         $this->encodePassword($user);
-    }*/
-
-
+    }
+    
     /**
      * Encode the password based on plain password.
      *

@@ -48,20 +48,33 @@ class UserController extends AbstractController
         ]);
     }
 
+
+    /**
+     * This controller allow us to edit a user password.
+     *
+     * @param User $user
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param UserPasswordHasherInterface $hasher
+     * @return Response
+     */
     #[Route('/user/eidit/password/{id}', name: 'app_user_edit_password', methods: ['GET','POST'])]
     public function editPassword(User $user, Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $hasher): Response {
+
         if (!$this->getUser()){
             return $this->redirectToRoute('app_security_inscription');
         }
         if($this->getUser()!== $user){
             return $this->redirectToRoute('acceuil.index');
         }
+
         $form = $this->createForm(UserPasswordType::class);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             if ($hasher->isPasswordValid($user, $form->getData()['plainPassword'])) {
-                // la fonction preupdate ne foctionne pas.
-                $user->setPassword($hasher->hashPassword($user, $form->getData()['newPassword']));
+                $user->setCreatedAt(new \DateTimeImmutable());
+                $user->setPlainPassword($form->getData()['newPassword']);
                 $manager->persist($user);
                 $manager->flush();
                 $this->addFlash('success', 'Votre mot de passe a été modifiée avec succès!');
@@ -69,6 +82,7 @@ class UserController extends AbstractController
             }
             $this->addFlash('warning', 'Votre mots de passe est incorrecte!');
         }
+
         return $this->render('pages/user/edit_password.html.twig', [ 
             'form' => $form->createView()
         ]);
