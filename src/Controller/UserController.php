@@ -60,6 +60,7 @@ class UserController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($hasher->isPasswordValid($user, $form->getData()['plainPassword'])) {
+                // la fonction preupdate ne foctionne pas.
                 $user->setPassword($hasher->hashPassword($user, $form->getData()['newPassword']));
                 $manager->persist($user);
                 $manager->flush();
