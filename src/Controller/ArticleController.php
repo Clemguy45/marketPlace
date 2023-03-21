@@ -27,7 +27,7 @@ class ArticleController extends AbstractController
     public function index(ArticleRepository $articleRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $articles = $paginator->paginate(
-            $articleRepository->findAll(),
+            $articleRepository->findBy(['user'=> $this->getUser()]),
             $request->query->getInt('page', 1),
             10
         );
@@ -51,6 +51,7 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $article = $form->getData();
+            $article->setUser($this->getUser());
             $manager->persist($article);
             $manager->flush();
             $this->addFlash('success', 'Votre article a bien été enregistrée');

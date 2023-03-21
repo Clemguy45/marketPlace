@@ -6,13 +6,39 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarColor02">
       <ul class="navbar-nav me-auto">
+      {% if app.user %}
         <li class="nav-item">
           <a class="nav-link active" href="{{ path('acceuil.index') }}">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" href="{{ path('app_article') }}">Article</a>
         </li>
+      {% endif %}
+      {% if not app.user %}
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ path('app_security_login') }}">Connexion</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ path('app_security_inscription') }}">Inscrption</a>
+        </li>
+      {% endif %}
       </ul>
+      {% if app.user %}
+        <div class= "d-flex">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item dropdown" style = "margin-right: 5rem;">
+              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ app.user.fullName }}</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{ path('app_user_edit', { id : app.user.id } ) }}">Modifier les information</a>
+                <a class="dropdown-item" href="{{ path('app_user_edit_password', { id : app.user.id }) }}">Modifier le mot de passe</a>
+                <a class="dropdown-item" href="{{ path('app_security_logout') }}">Deconnexion</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+            </li>
+          </ul>
+      </div>
+      {% endif %}
     </div>
   </div>
 </nav>
