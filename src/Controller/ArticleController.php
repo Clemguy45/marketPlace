@@ -10,7 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ArticleController extends AbstractController
 {
@@ -24,6 +26,7 @@ class ArticleController extends AbstractController
      * @return Response
      */
     #[Route('/article', name: 'app_article')]
+    #[IsGranted('ROLE_USER')]
     public function index(ArticleRepository $articleRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $articles = $paginator->paginate(
@@ -44,6 +47,7 @@ class ArticleController extends AbstractController
      * @return Response
      */
     #[Route('/article/nouveau', 'article.new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function new(Request $request , EntityManagerInterface $manager) : Response{
         $article = new Article();
         $form = $this->createForm(ArticlesType::class, $article);
@@ -68,6 +72,7 @@ class ArticleController extends AbstractController
      * @param Request $request
      */
     #[Route('/article/edition/{id}', name: 'app_article_show', methods: ['GET', 'POST'])]
+    #[Security('is_granted("ROLE_USER") and user === article.getUser()')]
     public function edit(Request $request , EntityManagerInterface $entityManagerInterface, Article $article) : Response {
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
